@@ -5,8 +5,7 @@ from functools import wraps
 from pathlib import Path
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-from flask import Flask, render_template, request, redirect, url_for, flash, session, g, send_file, abort
-
+from flask import Flask, render_template, request, redirect, url_for, flash, session, g, send_file, send_from_directory, abort
 BASE = Path(__file__).resolve().parent
 INSTANCE = BASE / 'instance'
 UPLOADS = BASE / 'uploads' / 'student_photos'
