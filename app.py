@@ -219,6 +219,14 @@ def student_profile(sid):
     can_view_private = bool(g.user and (g.user['role'] in ('admin','warden') or (g.user['role']=='student' and g.user['student_id']==sid)))
     return render_template('student_profile.html', student=s, history=hist, can_view_private=can_view_private)
 
+@app.route('/uploads/student_photos/<path:filename>')
+def uploaded_student_photo(filename):
+    return send_from_directory(
+        UPLOADS,
+        filename,
+        max_age=3600
+    )
+ 
 @app.route('/students/add', methods=['GET','POST'])
 @roles_required('admin','warden')
 def student_add():
