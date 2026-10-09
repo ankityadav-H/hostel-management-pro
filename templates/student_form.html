@@ -1,1 +1,183 @@
-{% extends 'base.html' %}{% block title %}{{ 'Edit' if student else 'Add' }} Student · HostelPro{% endblock %}{% block content %}<div class="page-heading"><div><p class="eyebrow">RESIDENT RECORDS</p><h1>{{ 'Edit student' if student else 'Add a student' }}</h1><p>Fields with required marks must be completed.</p></div></div><form method="post" enctype="multipart/form-data" class="panel form-panel"><div class="form-grid"><label>Student ID / Code<input name="student_code" value="{{ student.student_code if student else '' }}" placeholder="Auto-generated if left empty" {% if student %}required{% endif %}></label><label>Full name *<input name="name" value="{{ student.name if student else '' }}" required></label><label>Phone<input name="phone" value="{{ student.phone if student else '' }}"></label><label>Emergency contact<input name="emergency_contact" value="{{ student.emergency_contact if student else '' }}"></label><label>Course<input name="course" value="{{ student.course if student else '' }}"></label><label>Branch<input name="branch" value="{{ student.branch if student else '' }}"></label><label>Year / Semester<input name="year" value="{{ student.year if student else '' }}"></label><label>Batch<input name="batch" value="{{ student.batch if student else '' }}"></label><label>Hostel name<input name="hostel_name" value="{{ student.hostel_name if student else '' }}"></label><label>Room number<select name="room_number"><option value="">Unallocated</option>{% for r in rooms %}<option {% if student and student.room_number==r.room_number %}selected{% endif %}>{{ r.room_number }}</option>{% endfor %}</select></label><label>Joining date<input type="date" name="joining_date" value="{{ student.joining_date if student else today }}"></label><label>Leaving date<input type="date" name="leaving_date" value="{{ student.leaving_date if student else '' }}"></label><label>Status<select name="status">{% for x in ['Currently Staying','Left Hostel','Transferred','On Leave'] %}<option {% if student and student.status==x %}selected{% elif not student and x=='Currently Staying' %}selected{% endif %}>{{ x }}</option>{% endfor %}</select></label><label>Student photo (JPG/PNG/WEBP)<input type="file" name="photo" accept="image/png,image/jpeg,image/webp"></label><label class="full-field">Address<textarea name="address" rows="3">{{ student.address if student else '' }}</textarea></label></div><div class="form-actions"><a class="btn secondary" href="{{ url_for('students_list') }}">Cancel</a><button class="btn primary">Save student</button></div></form>{% endblock %}
+
+{% extends 'base.html' %}
+{% block title %}{{ 'Edit' if student else 'Add' }} Student · HostelPro{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">RESIDENT RECORDS</p>
+    <h1>{{ 'Edit student' if student else 'Add a student' }}</h1>
+    <p>Student details aur photo upload karein.</p>
+  </div>
+</div>
+
+<form method="post" enctype="multipart/form-data" class="panel form-panel">
+  <div class="form-grid">
+
+    <label>Student ID / Code
+      <input name="student_code"
+             value="{{ student.student_code if student else '' }}"
+             placeholder="Auto-generated if left empty"
+             {% if student %}required{% endif %}>
+    </label>
+
+    <label>Full name *
+      <input name="name" value="{{ student.name if student else '' }}" required>
+    </label>
+
+    <label>Phone
+      <input name="phone" value="{{ student.phone if student else '' }}">
+    </label>
+
+    <label>Emergency contact
+      <input name="emergency_contact"
+             value="{{ student.emergency_contact if student else '' }}">
+    </label>
+
+    <label>Course
+      <input name="course" value="{{ student.course if student else '' }}">
+    </label>
+
+    <label>Branch
+      <input name="branch" value="{{ student.branch if student else '' }}">
+    </label>
+
+    <label>Year / Semester
+      <input name="year" value="{{ student.year if student else '' }}">
+    </label>
+
+    <label>Batch
+      <input name="batch" value="{{ student.batch if student else '' }}">
+    </label>
+
+    <label>Hostel name
+      <input name="hostel_name" value="{{ student.hostel_name if student else '' }}">
+    </label>
+
+    <label>Room number
+      <select name="room_number">
+        <option value="">Unallocated</option>
+        {% for r in rooms %}
+        <option value="{{ r.room_number }}"
+          {% if student and student.room_number == r.room_number %}selected{% endif %}>
+          {{ r.room_number }}
+        </option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label>Joining date
+      <input type="date" name="joining_date"
+             value="{{ student.joining_date if student else '' }}">
+    </label>
+
+    <label>Leaving date
+      <input type="date" name="leaving_date"
+             value="{{ student.leaving_date if student else '' }}">
+    </label>
+
+    <label>Status
+      <select name="status">
+        {% for x in ['Currently Staying', 'Left Hostel', 'Transferred', 'On Leave'] %}
+        <option value="{{ x }}"
+          {% if student and student.status == x %}selected
+          {% elif not student and x == 'Currently Staying' %}selected{% endif %}>
+          {{ x }}
+        </option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <!-- PHOTO PREVIEW -->
+    <div class="photo-upload full-field">
+      <div class="photo-preview-shell">
+        {% if student and student.photo %}
+        <img id="photo-preview" class="photo-preview"
+             src="{{ url_for('uploaded_student_photo', filename=student.photo) }}"
+             alt="Student photo">
+        <div id="photo-placeholder" class="photo-placeholder" hidden>👤</div>
+        {% else %}
+        <img id="photo-preview" class="photo-preview"
+             alt="Selected photo preview" hidden>
+        <div id="photo-placeholder" class="photo-placeholder">👤</div>
+        {% endif %}
+      </div>
+
+      <div class="photo-upload-copy">
+        <label for="photo-input">Select Student Photo</label>
+        <input id="photo-input" type="file" name="photo"
+               accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
+        <small>JPG, PNG or WEBP. Maximum size 5 MB.</small>
+        <small>Photo select karte hi preview dikhega.</small>
+        <p id="photo-error" class="photo-error" role="alert" hidden></p>
+      </div>
+    </div>
+
+    <label class="full-field">Address
+      <textarea name="address" rows="3">{{ student.address if student else '' }}</textarea>
+    </label>
+  </div>
+
+  <div class="form-actions">
+    <a class="btn secondary" href="{{ url_for('students_list') }}">Cancel</a>
+    <button class="btn primary" type="submit">Save student</button>
+  </div>
+</form>
+
+<script>
+(() => {
+  const input = document.getElementById('photo-input');
+  const preview = document.getElementById('photo-preview');
+  const placeholder = document.getElementById('photo-placeholder');
+  const error = document.getElementById('photo-error');
+
+  if (!input || !preview || !placeholder || !error) return;
+
+  let previousUrl = null;
+
+  input.addEventListener('change', () => {
+    error.hidden = true;
+    error.textContent = '';
+
+    const file = input.files && input.files[0];
+    if (!file) return;
+
+    const allowedExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    const extension = file.name.toLowerCase().split('.').pop();
+
+    if (!allowedExtensions.includes(extension) ||
+        !allowedTypes.includes(file.type)) {
+      input.value = '';
+      error.textContent = 'Please select a JPG, PNG or WEBP image.';
+      error.hidden = false;
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      input.value = '';
+      error.textContent = 'Photo size must be 5 MB or less.';
+      error.hidden = false;
+      return;
+    }
+
+    if (previousUrl) URL.revokeObjectURL(previousUrl);
+    previousUrl = URL.createObjectURL(file);
+
+    preview.onload = () => {
+      preview.hidden = false;
+      placeholder.hidden = true;
+    };
+
+    preview.onerror = () => {
+      preview.hidden = true;
+      placeholder.hidden = false;
+      error.textContent = 'Image preview failed. Please try another photo.';
+      error.hidden = false;
+    };
+
+    preview.src = previousUrl;
+  });
+})();
+</script>
+{% endblock %}
