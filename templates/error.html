@@ -1,0 +1,1 @@
+{% extends 'base.html' %}{% block title %}{{ code }} · HostelPro{% endblock %}{% block content %}<div class="error-page panel"><span class="error-code">{{ code }}</span><h1>That page isn't available.</h1><p>{{ message }}</p><a class="btn primary" href="{{ url_for('index') }}">Back to home</a></div>{% endblock %}

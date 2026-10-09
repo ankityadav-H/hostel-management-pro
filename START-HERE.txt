@@ -1,0 +1,16 @@
+HOSTEL MANAGEMENT PRO — START HERE
+
+1) Extract the ZIP into a normal folder, for example Desktop\Hostel-Management-Pro
+2) Open PowerShell in that folder (the one where app.py is directly visible).
+3) Run:
+   py -m venv .venv
+   .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+   .\.venv\Scripts\python.exe app.py
+4) Browser: http://127.0.0.1:5000
+
+Default demo administrator:
+  username: admin
+  password: admin123
+Change the password from the Password link immediately.
+
+This is a local-development starter, not a production-secured deployment. Do not use real student records on a public server before adding CSRF protection, HTTPS, secure secrets, backups, privacy review and security testing. Fee pages store manual records; they do not collect online payments.
